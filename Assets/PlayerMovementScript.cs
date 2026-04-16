@@ -6,12 +6,17 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody2D rb;
     public float velocidade = 5f;
 
-    AudioSource audio;
+    [Header("Sons")]
+    public AudioSource audioColetavel;
+    public AudioSource audioDano;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        audio = GetComponent<AudioSource>();
+        
+        AudioSource[] audios = GetComponents<AudioSource>();
+        if (audios.Length >= 1) audioColetavel = audios[0];
+        if (audios.Length >= 2) audioDano = audios[1];
     }
 
     void FixedUpdate()
@@ -35,16 +40,20 @@ public class PlayerMovement : MonoBehaviour
     {
         if (other.tag == "Coletavel")
         {
-            audio.Play();
+            if (audioColetavel != null)
+                audioColetavel.Play();
+            
             GameControll.Coletar();
             Destroy(other.gameObject);
-
         }
+        
         if (other.tag == "Inimigo")
         {
+            if (audioDano != null)
+                audioDano.Play();
+            
             GameControll.PerderVida();
             Destroy(other.gameObject);
         }
     }
 }
-
